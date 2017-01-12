@@ -1,10 +1,14 @@
-function h= setup_animations(bec,wp)
+function h= setup_animations(bec,wp,barriers)
 figure
 plot(bec(1,:),bec(2,:),'g*')
 hold on, axis equal
 
 wp = [wp wp(:,1)];
 plot(wp(1,:),wp(2,:), wp(1,:),wp(2,:),'ro')
+n = size(barriers,2);
+for i=1:n
+    plot([barriers(1,i),barriers(3,i)],[barriers(2,i),barriers(4,i)],'--k');
+end
 
 h.xt= patch(0,0,'g','erasemode','xor'); % vehicle true
 h.xm= patch(0,0,'r','erasemode','xor'); % mean vehicle estimate

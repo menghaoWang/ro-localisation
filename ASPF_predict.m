@@ -3,7 +3,7 @@ function particle = ASPF_predict(particle,dV,dG,generator,ro_model)
 V = dV + randn*dV*generator.sigmaV;
 G = dG + randn*generator.sigmaG;
 
-particle.xp = se2_plus(particle.xp,V,G);
+particle.xp = pose2D_plus(particle.xp,V,G);
 n = size(particle.state,1);
 for i=1:n
     particle.state(i) = offset_transition_model(particle.state(i),ro_model);

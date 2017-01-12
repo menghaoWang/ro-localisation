@@ -5,7 +5,7 @@ close all
 clc
 
 configure;%load configure
-load('example_01.mat');%wp means to GT and bec shows that robot know the beacons exactly location
+load('barrier_2.mat');%wp means to GT and bec shows that robot know the beacons exactly location
 %load('one_beac.mat');
 nbeacon = size(bec,2);
 nwp = size(wp,2);
@@ -16,7 +16,7 @@ particles = initialise_particles(nParticles,robot_pose,bec);
 
 iwp = 1;%current reached
 
-h= setup_animations(bec,wp);
+h= setup_animations(bec,wp,barriers);
 veh= [0 -0.2 -0.2; 0 -0.2 0.2];
 istep = 0;
 while(1)
@@ -25,7 +25,8 @@ while(1)
         particles(i) = ASPF_predict(particles(i),dV,dG,generator,ro_model);
     end
     if (mod(istep,step_interval))%sensor reading
-        obs = observation_generator(bec,ground_truth,generator);
+        
+        obs = observation_generator(bec,ground_truth,generator,barriers);
         for i=1:nParticles
             particle = particles(i);
             particle = compute_likelihood(particle,obs,generator.beacon_std);
@@ -41,5 +42,4 @@ while(1)
         do_plot(h,particles,ground_truth,obs,veh,bec);
     end
     istep = istep + 1
-   % pause;
 end

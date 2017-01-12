@@ -22,7 +22,7 @@ function varargout = MapCreator(varargin)
 
 % Edit the above text to modify the response to help MapCreator
 
-% Last Modified by GUIDE v2.5 25-Nov-2016 10:04:28
+% Last Modified by GUIDE v2.5 07-Dec-2016 16:30:31
 
 % Begin initialization code - DO NOT EDIT
 
@@ -72,9 +72,10 @@ guidata(hObject, handles);%¸üÐÂhandles
 
 % UIWAIT makes MapCreator wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-global WAYPOINTS BEACONS
+global WAYPOINTS BEACONS BARRIERS
 BEACONS = [];
 WAYPOINTS = [];
+BARRIERS = [];
 
 % --- Outputs from this function are returned to the command line.
 function varargout = MapCreator_OutputFcn(hObject, eventdata, handles) 
@@ -98,7 +99,8 @@ if (~get(handles.beacon, 'value'))
     return;
 end
 disp('set beacon');
-set(handles.waypoint, 'value', 0)
+set(handles.waypoint, 'value', 0);
+set(handles.barrier, 'value',0);
 
  [xn,yn,bn]= ginput(1);
   while ~isempty(xn) && bn == 1
@@ -120,7 +122,8 @@ if (~get(handles.waypoint, 'value'))
     return;
 end
 disp('set waypoint');
-set(handles.beacon, 'value', 0)
+set(handles.beacon, 'value', 0);
+set(handles.barrier, 'value',0);
 
 global WAYPOINTS
 [xn,yn,bn]= ginput(1);
@@ -131,6 +134,42 @@ global WAYPOINTS
          plot(WAYPOINTS(1,:),WAYPOINTS(2,:),'r*');
         [xn,yn,bn]= ginput(1);     
   end   
+  
+% --- Executes on button press in barrier.
+function barrier_Callback(hObject, eventdata, handles)
+ccc = 1
+if (~get(handles.barrier, 'value'))
+    return;
+end
+disp('set barrier');
+set(handles.beacon, 'value', 0);
+set(handles.waypoint, 'value', 0);
+
+global BARRIERS
+nInput = 0;
+[xn1,yn1,bn]= ginput(1);
+nInput = nInput + 1;
+while ~isempty(xn1) && bn == 1
+    axes(handles.axes1); hold on;
+    plot(xn1,yn1,'b*')
+    new_barrier = [xn1;yn1];
+    [xn2,yn2,bn]= ginput(1);   
+    new_barrier = [new_barrier;xn2;yn2];
+    plot(xn2,yn2,'b*');
+    plot([xn1,xn2],[yn1,yn2],'--b')
+    BARRIERS = [BARRIERS new_barrier]
+    set(handles.barrier, 'value',0);
+
+    break;
+end
+
+
+
+% hObject    handle to barrier (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of barrier
  
 % Hint: get(hObject,'Value') returns toggle state of waypoint
 
@@ -139,14 +178,16 @@ function save_button_Callback(hObject, eventdata, handles)
 
 set(handles.beacon, 'value', 0);
 set(handles.waypoint, 'value', 0);
-global WAYPOINTS BEACONS
+set(handles.barrier, 'value', 0);
+global WAYPOINTS BEACONS BARRIERS
 wp= WAYPOINTS; 
 bec= BEACONS;
+barriers = BARRIERS
 seed = {'*.mat','MAT-files (*.mat)'};
 [fn,pn] = uiputfile(seed, 'Save BEACONS and WAYPOINTS');
 if fn==0, return, end
 fnpn = strrep(fullfile(pn,fn), '''', '''''');
-save(fnpn, 'wp', 'bec');
+save(fnpn, 'wp', 'bec','barriers');
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -162,4 +203,3 @@ WAYPOINTS = [];
 BEACONS = [];
 axes(handles.axes1);
 cla
-

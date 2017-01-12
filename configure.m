@@ -1,7 +1,7 @@
 step_interval = 10;
 nParticles = 3000;
-resample_beta = 0.5;
-nNLOS = 0;
+resample_beta = 0.0;
+%nNLOS = 0;
 
 generator.V = 0.1;
 generator.G = 0.5;

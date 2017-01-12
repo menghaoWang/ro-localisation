@@ -32,7 +32,7 @@ if deltaS < generator.V
     end
 end
 
-GT = se2_plus(GT,V,G);
+GT = pose2D_plus(GT,V,G);
 %add gaussian random noise
 dV = V + randn*V*generator.sigmaV;
 dG = G + randn*G*generator.sigmaG;
